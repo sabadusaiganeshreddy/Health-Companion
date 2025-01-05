@@ -1,5 +1,6 @@
 package com.example.first;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private ChipGroup chipGroup;
     private TextView tvLimitMessage;
     private static final int MAX_SYMPTOMS = 10;
+    private Button btnGoToBMICalculator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         tvPrediction = findViewById(R.id.tvPrediction);
         chipGroup = findViewById(R.id.chipGroup);
         tvLimitMessage = findViewById(R.id.tvLimitMessage);
+        btnGoToBMICalculator = findViewById(R.id.btnGoToBMICalculator);
 
         etSymptoms.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -51,6 +54,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Your prediction logic here
                 tvPrediction.setText("Prediction logic not implemented yet.");
+            }
+        });
+
+        btnGoToBMICalculator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, BMICalculatorActivity.class);
+                startActivity(intent);
             }
         });
     }

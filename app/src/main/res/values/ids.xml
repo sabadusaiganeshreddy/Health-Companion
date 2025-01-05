@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tvTitle" type="id" />
+    <item name="etSymptoms" type="id" />
+    <item name="tvLimitMessage" type="id" />
+    <item name="chipGroup" type="id" />
+    <item name="btnPredict" type="id" />
+    <item name="tvPrediction" type="id" />
+</resources>
