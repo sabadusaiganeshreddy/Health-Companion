@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#9C27B0</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+        <color name="underweight">#F44336</color>  <!-- Red -->
+        <color name="normal_weight">#4CAF50</color> <!-- Green -->
+        <color name="overweight">#FF9800</color>  <!-- Orange -->
+        <color name="obese">#D32F2F</color>  <!-- Dark Red -->
+
+
 </resources>

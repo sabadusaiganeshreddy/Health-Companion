@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.First" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.HealthCompanion" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">#FF6E40</item>
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.First" parent="Base.Theme.First" />
+    <style name="Theme.HealthCompanion" parent="Base.Theme.HealthCompanion" />
 </resources>
