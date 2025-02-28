@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">HealthCompanion</string>
+<string name="error_empty_search">Please enter a food name</string>
+<string name="error_food_not_found">Nutritional information not available for %s</string>
+<string name="food_nutrition_info">Calories: %d kcal\nProtein: %.1f g\nCarbs: %.1f g\nFats: %.1f g</string>
+</resources>
