@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+<<<<<<< HEAD
 
         // ✅ Recipe Generator Button Integration
         findViewById(R.id.btn_recipe_generator).setOnClickListener(new View.OnClickListener() {
@@ -46,3 +47,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+=======
+    }
+}
+>>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2

@@ -46,6 +46,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
 
+<<<<<<< HEAD
     <Button
         android:id="@+id/btn_recipe_generator"
         android:layout_width="wrap_content"
@@ -57,4 +58,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 
+=======
+>>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
 <string name="error_empty_search">Please enter a food name</string>
 <string name="error_food_not_found">Nutritional information not available for %s</string>
 <string name="food_nutrition_info">Calories: %d kcal\nProtein: %.1f g\nCarbs: %.1f g\nFats: %.1f g</string>
+<<<<<<< HEAD
 <string name="recipe_generator_title">Recipe Generator</string>
 <string name="hint_enter_food">Enter a food ingredient</string>
 <string name="btn_generate_recipe">Generate Recipe</string>
@@ -23,3 +24,6 @@
 <string name="error_no_food_item">Please enter a food item</string>
 <string name="label_recent_searches">Recent searches:</string>
 </resources>
+=======
+</resources>
+>>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2
