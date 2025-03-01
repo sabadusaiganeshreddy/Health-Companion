@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cuisine_types">
+        <item>Any</item>
+        <item>Italian</item>
+        <item>Mexican</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Japanese</item>
+        <item>Thai</item>
+        <item>Mediterranean</item>
+        <item>American</item>
+        <item>French</item>
+        <item>Spanish</item>
+        <item>Middle Eastern</item>
+        <item>Korean</item>
+        <item>Vietnamese</item>
+        <item>Greek</item>
+        <item>Caribbean</item>
+        <item>African</item>
+    </string-array>
+
+    <string-array name="dietary_preferences">
+        <item>None</item>
+        <item>Vegetarian</item>
+        <item>Vegan</item>
+        <item>Gluten-Free</item>
+        <item>Dairy-Free</item>
+        <item>Low-Carb</item>
+        <item>Keto</item>
+        <item>Paleo</item>
+        <item>Low-Fat</item>
+        <item>High-Protein</item>
+        <item>Nut-Free</item>
+        <item>Sugar-Free</item>
+    </string-array>
+
+    <string-array name="difficulty_levels">
+        <item>Any</item>
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
+</resources>

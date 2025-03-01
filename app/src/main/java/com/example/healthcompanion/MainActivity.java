@@ -35,5 +35,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // ✅ Recipe Generator Button Integration
+        findViewById(R.id.btn_recipe_generator).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RecipeGeneratorActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

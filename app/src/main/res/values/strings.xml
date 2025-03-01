@@ -3,4 +3,23 @@
 <string name="error_empty_search">Please enter a food name</string>
 <string name="error_food_not_found">Nutritional information not available for %s</string>
 <string name="food_nutrition_info">Calories: %d kcal\nProtein: %.1f g\nCarbs: %.1f g\nFats: %.1f g</string>
+<string name="recipe_generator_title">Recipe Generator</string>
+<string name="hint_enter_food">Enter a food ingredient</string>
+<string name="btn_generate_recipe">Generate Recipe</string>
+<string name="btn_show_options">Show Options</string>
+<string name="btn_hide_options">Hide Options</string>
+<string name="label_cuisine_type">Cuisine Type:</string>
+<string name="label_dietary_preferences">Dietary Preferences:</string>
+<string name="label_difficulty_level">Difficulty Level:</string>
+<string name="hint_max_cooking_time">Maximum cooking time (minutes)</string>
+<string name="hint_exclude_ingredients">Ingredients to exclude (comma separated)</string>
+<string name="label_ingredients">Ingredients</string>
+<string name="label_instructions">Instructions</string>
+<string name="label_nutrition">Nutrition Information</string>
+<string name="label_tips">Cooking Tips</string>
+<string name="btn_save">Save</string>
+<string name="btn_share">Share</string>
+<string name="toast_recipe_saved">Recipe saved to favorites!</string>
+<string name="error_no_food_item">Please enter a food item</string>
+<string name="label_recent_searches">Recent searches:</string>
 </resources>

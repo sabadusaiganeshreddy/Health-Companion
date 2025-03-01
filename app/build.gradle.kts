@@ -47,8 +47,13 @@ dependencies {
 dependencies {
     implementation ("androidx.room:room-runtime:2.6.1")
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
-
+    implementation ("io.noties.markwon:core:4.6.2")
 }
+dependencies {
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation ("com.google.code.gson:gson:2.8.9")
+}
+
 
 
 configurations.all {
