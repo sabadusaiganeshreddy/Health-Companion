@@ -47,19 +47,13 @@ dependencies {
 dependencies {
     implementation ("androidx.room:room-runtime:2.6.1")
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
-<<<<<<< HEAD
+
     implementation ("io.noties.markwon:core:4.6.2")
 }
 dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.code.gson:gson:2.8.9")
 }
-
-=======
-
-}
->>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2
-
 
 configurations.all {
     exclude(group = "com.intellij", module = "annotations")

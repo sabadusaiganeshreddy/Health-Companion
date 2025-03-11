@@ -1,3 +1,4 @@
+// Food.java
 package com.example.healthcompanion.model;
 
 import androidx.room.Entity;

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-<<<<<<< HEAD
-    <uses-permission android:name="android.permission.INTERNET"/>
-=======
 
->>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -52,7 +49,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-<<<<<<< HEAD
+
         <activity
             android:name=".RecipeGeneratorActivity"
             android:exported="true"
@@ -61,8 +58,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-=======
->>>>>>> 248f2536637f6223bc807cdd6a3d04d74302a8a2
+
 
     </application>
 

@@ -1,3 +1,4 @@
+// FoodDatabase.java
 package com.example.healthcompanion.database;
 
 import android.content.Context;

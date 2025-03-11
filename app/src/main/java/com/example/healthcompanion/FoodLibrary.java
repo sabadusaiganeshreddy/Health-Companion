@@ -1,3 +1,4 @@
+// FoodLibrary.java
 package com.example.healthcompanion;
 
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class FoodLibrary extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_food_library);
         setContentView(R.layout.activity_food_library);
 
         etSearch = findViewById(R.id.et_search);
