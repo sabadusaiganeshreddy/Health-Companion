@@ -1,9 +1,10 @@
-// FoodLibrary.java
 package com.example.healthcompanion;
 
 import android.os.Bundle;
+import android.view.View; // Import View
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout; // Import TableLayout
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.healthcompanion.database.FoodDatabase;
@@ -14,7 +15,10 @@ import java.util.concurrent.Executors;
 
 public class FoodLibrary extends AppCompatActivity {
     private EditText etSearch;
-    private TextView tvResult;
+    private TextView tvResultError; // Renamed to tvResultError for error messages
+    private TextView tvResultLabel;  // Label for Nutrition Table
+    private TableLayout tableNutrition; // TableLayout for nutrition
+    private TextView tvCaloriesValue, tvProteinValue, tvCarbsValue, tvFatsValue; // TextViews for table values
     private FoodDatabase db;
     private ExecutorService executorService;
 
@@ -22,14 +26,19 @@ public class FoodLibrary extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_library);
-        setContentView(R.layout.activity_food_library);
 
         etSearch = findViewById(R.id.et_search);
-        tvResult = findViewById(R.id.tv_result);
+        tvResultError = findViewById(R.id.tv_result_error); // Renamed to tvResultError in layout too if you want to be consistent
+        tvResultLabel = findViewById(R.id.tv_result_label);
+        tableNutrition = findViewById(R.id.table_nutrition);
+        tvCaloriesValue = findViewById(R.id.tv_calories_value);
+        tvProteinValue = findViewById(R.id.tv_protein_value);
+        tvCarbsValue = findViewById(R.id.tv_carbs_value);
+        tvFatsValue = findViewById(R.id.tv_fats_value);
         Button btnSearch = findViewById(R.id.btn_search);
 
         db = FoodDatabase.getDatabase(this);
-        executorService = Executors.newSingleThreadExecutor(); // Use Executor instead of new Thread()
+        executorService = Executors.newSingleThreadExecutor();
 
         btnSearch.setOnClickListener(v -> searchFood());
     }
@@ -38,7 +47,10 @@ public class FoodLibrary extends AppCompatActivity {
         String searchQuery = etSearch.getText().toString().toLowerCase().trim();
 
         if (searchQuery.isEmpty()) {
-            tvResult.setText(getString(R.string.error_empty_search)); // Use strings.xml
+            tvResultError.setVisibility(View.VISIBLE); // Show error TextView
+            tableNutrition.setVisibility(View.GONE);   // Hide table and label
+            tvResultLabel.setVisibility(View.GONE);
+            tvResultError.setText(getString(R.string.error_empty_search));
             return;
         }
 
@@ -47,13 +59,20 @@ public class FoodLibrary extends AppCompatActivity {
                 Food food = db.foodDao().findFood(searchQuery);
 
                 runOnUiThread(() -> {
-                    if (!isFinishing()) { // Prevent crashes if activity is destroyed
+                    if (!isFinishing()) {
                         if (food != null) {
-                            String nutritionalInfo = getString(R.string.food_nutrition_info,
-                                    food.getCalories(), food.getProtein(), food.getCarbs(), food.getFats());
-                            tvResult.setText(nutritionalInfo);
+                            tvResultError.setVisibility(View.GONE); // Hide error TextView
+                            tvResultLabel.setVisibility(View.VISIBLE); // Show table label
+                            tableNutrition.setVisibility(View.VISIBLE);   // Show table
+                            tvCaloriesValue.setText(String.valueOf(food.getCalories()));
+                            tvProteinValue.setText(String.valueOf(food.getProtein()));
+                            tvCarbsValue.setText(String.valueOf(food.getCarbs()));
+                            tvFatsValue.setText(String.valueOf(food.getFats()));
                         } else {
-                            tvResult.setText(getString(R.string.error_food_not_found, searchQuery));
+                            tvResultError.setVisibility(View.VISIBLE); // Show error TextView
+                            tableNutrition.setVisibility(View.GONE);   // Hide table and label
+                            tvResultLabel.setVisibility(View.GONE);
+                            tvResultError.setText(getString(R.string.error_food_not_found, searchQuery));
                         }
                     }
                 });
@@ -64,6 +83,6 @@ public class FoodLibrary extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        executorService.shutdown(); // Shut down ExecutorService to avoid memory leaks
+        executorService.shutdown();
     }
 }

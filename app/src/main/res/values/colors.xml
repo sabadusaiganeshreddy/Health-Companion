@@ -9,6 +9,7 @@
         <color name="normal_weight">#4CAF50</color> <!-- Green -->
         <color name="overweight">#FF9800</color>  <!-- Orange -->
         <color name="obese">#D32F2F</color>  <!-- Dark Red -->
-
-
+        <color name="windowBackground">#FFFFFF</color>
+        <color name="navigationBarColor">#000000</color>
+        <color name="colorOnPrimary">#FFFFFF</color>
 </resources>
