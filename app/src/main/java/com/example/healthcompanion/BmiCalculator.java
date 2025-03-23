@@ -1,8 +1,6 @@
 package com.example.healthcompanion;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +9,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import java.text.DecimalFormat;
 
 public class BmiCalculator extends AppCompatActivity {
     private EditText etWeight, etHeight;
-    private TextView tvResult, tvWeightAdvice;
+    private TextView tvResult, tvCategory;
     private ProgressBar bmiProgress;
     private View bmiPointer;
 
@@ -28,6 +26,7 @@ public class BmiCalculator extends AppCompatActivity {
         etWeight = findViewById(R.id.et_weight);
         etHeight = findViewById(R.id.et_height);
         tvResult = findViewById(R.id.tv_result);
+        tvCategory = findViewById(R.id.tv_category);
         bmiProgress = findViewById(R.id.bmi_progress);
         bmiPointer = findViewById(R.id.bmi_pointer);
         Button btnCalculate = findViewById(R.id.btn_calculate);
@@ -53,8 +52,17 @@ public class BmiCalculator extends AppCompatActivity {
             float weight = Float.parseFloat(weightStr);
             float height = Float.parseFloat(heightStr) / 100; // Convert cm to meters
 
+            // Add input validation
             if (weight <= 0 || height <= 0) {
                 Toast.makeText(this, "Weight and height must be positive values", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (height < 0.5 || height > 2.5) { // Height between 50 cm and 250 cm
+                Toast.makeText(this, "Height must be between 50 cm and 250 cm", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (weight < 20 || weight > 300) { // Weight between 20 kg and 300 kg
+                Toast.makeText(this, "Weight must be between 20 kg and 300 kg", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -68,16 +76,17 @@ public class BmiCalculator extends AppCompatActivity {
             String weightAdvice;
             if (bmi < 18.5) {
                 float neededGain = minWeight - weight;
-                weightAdvice = "\nYou need to gain at least " + df.format(neededGain) + " kg to reach a normal weight.";
+                weightAdvice = "You need to gain at least " + df.format(neededGain) + " kg to reach a normal weight.";
             } else if (bmi > 24.9) {
                 float neededLoss = weight - maxWeight;
-                weightAdvice = "\nYou need to lose at least " + df.format(neededLoss) + " kg to reach a normal weight.";
+                weightAdvice = "You need to lose at least " + df.format(neededLoss) + " kg to reach a normal weight.";
             } else {
-                weightAdvice = "\nYou are in the normal weight range!";
+                weightAdvice = "You are in the normal weight range!";
             }
 
-            tvResult.setText("Your BMI: " + df.format(bmi) + "\n" + bmiCategory + weightAdvice);
-            updateProgressBar(bmi);
+            tvResult.setText("Your BMI: " + df.format(bmi));
+            tvCategory.setText(bmiCategory + "\n" + weightAdvice);
+            updateProgressBarAndPointer(bmi);
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid input. Please enter valid numbers", Toast.LENGTH_SHORT).show();
         }
@@ -90,25 +99,43 @@ public class BmiCalculator extends AppCompatActivity {
         else return "Obese";
     }
 
-    private void updateProgressBar(float bmi) {
-        int progress = (int) bmi;
+    private void updateProgressBarAndPointer(float bmi) {
+        // Set progress (cap at 40 since max is 40 in XML)
+        int progress = Math.min((int) bmi, 40);
+
+        // Use custom drawable for sharp color transitions
+        BmiProgressDrawable progressDrawable = new BmiProgressDrawable();
+        progressDrawable.setMax(40);
+        progressDrawable.setProgress(progress);
+        bmiProgress.setProgressDrawable(progressDrawable);
         bmiProgress.setProgress(progress);
 
-        int progressColor;
+        // Use translation to move the pointer
+        float bias = Math.min(bmi, 40.0f) / 40.0f; // Cap BMI at 40 before calculating bias
+        bmiProgress.post(() -> {
+            float progressBarWidth = bmiProgress.getWidth();
+            float pointerPosition = progressBarWidth * bias - (bmiPointer.getWidth() / 2.0f);
+            // Clamp the position to ensure the pointer stays within bounds
+            float minPosition = 0.0f;
+            float maxPosition = progressBarWidth - bmiPointer.getWidth();
+            pointerPosition = Math.max(minPosition, Math.min(maxPosition, pointerPosition));
+            bmiPointer.setTranslationX(pointerPosition);
+        });
+
+        // Debug log to verify bias
+        android.util.Log.d("BMI", "BMI: " + bmi + ", Bias: " + bias);
+
+        // Adjust pointer color based on category (using tint to preserve shape)
+        int pointerColor;
         if (bmi < 18.5) {
-            progressColor = Color.BLUE; // Underweight
+            pointerColor = getResources().getColor(R.color.underweight);
         } else if (bmi < 25) {
-            progressColor = Color.GREEN; // Normal weight
+            pointerColor = getResources().getColor(R.color.normal);
         } else if (bmi < 30) {
-            progressColor = Color.YELLOW; // Overweight
+            pointerColor = getResources().getColor(R.color.overweight);
         } else {
-            progressColor = Color.RED; // Obese
+            pointerColor = getResources().getColor(R.color.obese);
         }
-
-        // Change the progress bar color dynamically
-        Drawable progressDrawable = bmiProgress.getProgressDrawable().mutate();
-        progressDrawable.setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
-        bmiProgress.setProgressDrawable(progressDrawable);
+        bmiPointer.setBackgroundTintList(ColorStateList.valueOf(pointerColor));
     }
-
 }

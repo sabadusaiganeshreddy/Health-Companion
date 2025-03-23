@@ -2,14 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#9C27B0</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-        <color name="underweight">#F44336</color>  <!-- Red -->
-        <color name="normal_weight">#4CAF50</color> <!-- Green -->
-        <color name="overweight">#FF9800</color>  <!-- Orange -->
-        <color name="obese">#D32F2F</color>  <!-- Dark Red -->
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#F4511E</color>
+    <color name="colorAccent">#0288D1</color> <!-- Used for tv_result -->
+    <color name="underweight">#FFCDD2</color>
+    <color name="normal">#C8E6C9</color>
+    <color name="overweight">#FFECB3</color>
+    <color name="obese">#FF8A65</color>
         <color name="windowBackground">#FFFFFF</color>
         <color name="navigationBarColor">#000000</color>
         <color name="colorOnPrimary">#FFFFFF</color>
 </resources>
+
+

@@ -1,18 +1,21 @@
+<!-- res/drawable/bmi_progress_bar.xml -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Background color (white) -->
+    <!-- Background (grey) -->
     <item android:id="@android:id/background">
-        <shape android:shape="rectangle">
-            <solid android:color="#FFFFFF"/>  <!-- White background -->
-            <corners android:radius="10dp"/>
+        <shape>
+            <solid android:color="#E0E0E0" /> <!-- Grey background -->
         </shape>
     </item>
-
-    <!-- Progress color (initially transparent, will change dynamically) -->
+    <!-- Progress (gradient with color stops) -->
     <item android:id="@android:id/progress">
         <clip>
-            <shape android:shape="rectangle">
-                <solid android:color="@android:color/transparent"/> <!-- Transparent initially -->
-                <corners android:radius="10dp"/>
+            <shape>
+                <gradient
+                    android:startColor="#FFCDD2"
+                android:centerColor="#C8E6C9"
+                android:endColor="#FF8A65"
+                android:angle="0"
+                android:centerX="0.4625" />
             </shape>
         </clip>
     </item>
