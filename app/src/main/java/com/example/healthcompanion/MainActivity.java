@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.btn_symptom_predictor).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.card_symptom_predictor).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SymptomPredictor.class);
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_bmi_calculator).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.card_bmi_calculator).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, BmiCalculator.class);
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_food_library).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.card_food_library).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FoodLibrary.class);
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // ✅ Recipe Generator Button Integration
-        findViewById(R.id.btn_recipe_generator).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.card_recipe_generator).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, RecipeGeneratorActivity.class);

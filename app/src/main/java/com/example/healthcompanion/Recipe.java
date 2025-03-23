@@ -41,9 +41,10 @@ public class Recipe implements Serializable {
         return cookingTimeMinutes;
     }
 
-    public void setCookingTimeMinutes(int cookingTimeMinutes) {
+        public void setCookingTime(int cookingTimeMinutes) {
         this.cookingTimeMinutes = cookingTimeMinutes;
     }
+
 
     public String getDifficulty() {
         return difficulty;
