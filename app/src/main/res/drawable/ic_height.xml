@@ -1,0 +1,10 @@
+<!-- res/drawable/ic_height.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#757575"
+        android:pathData="M3,3h18v18H3V3m2,2v14h14V5H5m2,2h2v10H7V7m4,2h2v8h-2V9m4,2h2v6h-2v-6z" />
+</vector>

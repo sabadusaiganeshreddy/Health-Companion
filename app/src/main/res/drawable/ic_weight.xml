@@ -1,0 +1,10 @@
+<!-- res/drawable/ic_weight.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#757575"
+        android:pathData="M12,2a10,10 0 0,1 10,10 10,10 0 0,1 -10,10 10,10 0 0,1 -10,-10 10,10 0 0,1 10,-10M12,4a8,8 0 0,0 -8,8 8,8 0 0,0 8,8 8,8 0 0,0 8,-8 8,8 0 0,0 -8,-8M10,16h4v2h-4v-2z" />
+</vector>

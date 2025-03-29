@@ -1,0 +1,10 @@
+<!-- res/drawable/bmi_pointer.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="10dp"
+    android:height="20dp"
+    android:viewportWidth="10"
+    android:viewportHeight="20">
+    <path
+        android:fillColor="#000000"
+        android:pathData="M0,20 L5,0 L10,20 Z" /> <!-- Triangle pointing up -->
+</vector>
