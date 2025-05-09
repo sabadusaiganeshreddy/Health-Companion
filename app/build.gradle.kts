@@ -53,6 +53,8 @@ dependencies {
 dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.google.code.gson:gson:2.8.9")
+    implementation ("org.tensorflow:tensorflow-lite:2.17.0")
+
 }
 
 configurations.all {
