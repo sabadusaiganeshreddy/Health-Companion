@@ -23,6 +23,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Select Language:"
+            android:layout_marginBottom="8dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Enter your symptoms (separated by commas):"
             android:layout_marginBottom="8dp"/>
 
@@ -78,12 +92,10 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"/>
 
-                <TextView
-                    android:id="@+id/tv_prediction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/results_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

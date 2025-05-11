@@ -15,6 +15,9 @@
         <color name="windowBackground">#FFFFFF</color>
         <color name="navigationBarColor">#000000</color>
         <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="list_item_pressed">#E0E0E0</color>
+    <color name="list_item_focused">#D0D0D0</color>
+    <color name="list_item_default">@android:color/transparent</color>
 </resources>
 
 

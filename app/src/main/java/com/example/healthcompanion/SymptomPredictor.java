@@ -7,10 +7,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,22 +26,35 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 
 public class SymptomPredictor extends AppCompatActivity {
 
     private MultiAutoCompleteTextView symptomsInput;
     private Button predictButton;
     private ProgressBar progressBar;
-    private TextView predictionResult;
     private TextView disclaimer;
+    private Spinner languageSpinner;
+    private RecyclerView resultsRecyclerView;
+    private DiseaseAdapter diseaseAdapter;
 
     // Store disease data from JSON
     private List<DiseaseEntry> diseaseEntries = new ArrayList<>();
     private Set<String> allSymptoms = new HashSet<>();
+
+    private static class DiseaseResult {
+        String name;
+        double score;
+
+        public DiseaseResult(String name, double score) {
+            this.name = name;
+            this.score = score;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +65,9 @@ public class SymptomPredictor extends AppCompatActivity {
         symptomsInput = findViewById(R.id.et_symptoms);
         predictButton = findViewById(R.id.btn_predict);
         progressBar = findViewById(R.id.progress_bar);
-        predictionResult = findViewById(R.id.tv_prediction);
         disclaimer = findViewById(R.id.tv_disclaimer);
+        languageSpinner = findViewById(R.id.spinner_language);
+        resultsRecyclerView = findViewById(R.id.results_recycler_view);
 
         // Set disclaimer text
         disclaimer.setText("DISCLAIMER: This app provides predictions based on symptoms and is NOT a substitute for professional medical advice. " +
@@ -61,6 +79,19 @@ public class SymptomPredictor extends AppCompatActivity {
         // Set up autocomplete for symptoms
         setupSymptomAutocomplete();
 
+        // Populate language spinner
+        populateLanguageSpinner();
+
+        // Set up RecyclerView
+        resultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        List<DiseaseResult> initialDiseaseList = new ArrayList<>();
+        diseaseAdapter = new DiseaseAdapter(initialDiseaseList, (diseaseName) -> {
+            String selectedLanguage = languageSpinner.getSelectedItem().toString();
+            DiseaseDetailDialog dialog = new DiseaseDetailDialog(this, diseaseName, selectedLanguage);
+            dialog.show();
+        });
+        resultsRecyclerView.setAdapter(diseaseAdapter);
+
         // Set click listener for predict button
         predictButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +99,19 @@ public class SymptomPredictor extends AppCompatActivity {
                 predictDisease();
             }
         });
+    }
+
+    private void populateLanguageSpinner() {
+        List<String> languages = new ArrayList<>();
+        languages.add("English");
+        languages.add("Hindi");
+        languages.add("Telugu");
+        languages.add("Marathi");
+        languages.add("Kannada");
+        languages.add("Tamil");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, languages);
+        languageSpinner.setAdapter(adapter);
     }
 
     private void loadDiseaseData() {
@@ -79,13 +123,12 @@ public class SymptomPredictor extends AppCompatActivity {
             // Parse JSON data
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject diseaseObj = jsonArray.getJSONObject(i);
-                String disease = diseaseObj.getString("disease");
-
+                String disease = diseaseObj.getString("disease").toLowerCase(Locale.US); // Store in lowercase
                 JSONArray symptomsArray = diseaseObj.getJSONArray("symptoms");
                 List<String> symptoms = new ArrayList<>();
 
                 for (int j = 0; j < symptomsArray.length(); j++) {
-                    String symptom = symptomsArray.getString(j);
+                    String symptom = symptomsArray.getString(j).toLowerCase(Locale.US); // Store in lowercase
                     symptoms.add(symptom);
                     allSymptoms.add(symptom); // Add to all symptoms set
                 }
@@ -147,15 +190,15 @@ public class SymptomPredictor extends AppCompatActivity {
 
         // Show progress
         progressBar.setVisibility(View.VISIBLE);
-        predictionResult.setText("");
         findViewById(R.id.result_card).setVisibility(View.GONE);
+        resultsRecyclerView.setVisibility(View.GONE);
 
         // Parse entered symptoms
         String[] inputSymptoms = input.split("\\s*,\\s*");
         List<String> userSymptoms = new ArrayList<>();
         for (String symptom : inputSymptoms) {
             if (!symptom.trim().isEmpty()) {
-                userSymptoms.add(symptom.trim().toLowerCase());
+                userSymptoms.add(symptom.trim().toLowerCase(Locale.US)); // Normalize user input
             }
         }
 
@@ -166,189 +209,78 @@ public class SymptomPredictor extends AppCompatActivity {
         List<Map.Entry<String, Double>> sortedDiseases = new ArrayList<>(diseaseScores.entrySet());
         Collections.sort(sortedDiseases, (e1, e2) -> e2.getValue().compareTo(e1.getValue()));
 
-        // Build result text
-        StringBuilder resultBuilder = new StringBuilder();
+        // Prepare list of top disease results
+        List<DiseaseResult> topDiseaseResults = new ArrayList<>();
 
         if (sortedDiseases.isEmpty() || sortedDiseases.get(0).getValue() < 0.1) {
-            resultBuilder.append("No significant matches found for the symptoms provided.\n\n");
-            resultBuilder.append("Suggestions:\n");
-            resultBuilder.append("• Try using more specific symptoms\n");
-            resultBuilder.append("• Check symptom spelling\n");
-            resultBuilder.append("• Add more symptoms if possible\n\n");
-            resultBuilder.append("Remember: Always consult a healthcare professional for proper diagnosis.");
+            Toast.makeText(this, "No significant matches found", Toast.LENGTH_SHORT).show();
         } else {
-            resultBuilder.append("Based on the symptoms you provided, here are potential conditions:\n\n");
-
-            // Show top matches with at least 20% match
             int displayCount = 0;
             for (int i = 0; i < Math.min(5, sortedDiseases.size()); i++) {
                 Map.Entry<String, Double> entry = sortedDiseases.get(i);
-                String diseaseName = entry.getKey();
-                double score = entry.getValue();
-
-                if (score >= 0.2) { // Only show reasonable matches (20% or higher)
-                    // Capitalize disease name properly
-                    String formattedName = capitalizeDiseaseName(diseaseName);
-
-                    // Add match level description
-                    String matchLevel;
-                    if (score >= 0.8) {
-                        matchLevel = "Very strong";
-                    } else if (score >= 0.6) {
-                        matchLevel = "Strong";
-                    } else if (score >= 0.4) {
-                        matchLevel = "Moderate";
-                    } else {
-                        matchLevel = "Possible";
-                    }
-
-                    resultBuilder.append(formattedName)
-                            .append("\n")
-                            .append(matchLevel)
-                            .append(" match (")
-                            .append(String.format("%.0f%%", score * 100))
-                            .append(")\n\n");
-
+                if (entry.getValue() >= 0.2) {
+                    topDiseaseResults.add(new DiseaseResult(capitalizeDiseaseName(entry.getKey()), entry.getValue()));
                     displayCount++;
                 }
             }
 
             if (displayCount == 0) {
-                resultBuilder.append("No significant matches found. Please check your symptoms or consult a healthcare provider.");
+                Toast.makeText(this, "No significant matches found", Toast.LENGTH_SHORT).show();
             }
-            // The "IMPORTANT" text is removed here
         }
 
-        // Hide progress and show results
+        // Hide progress and show results in RecyclerView
         progressBar.setVisibility(View.GONE);
         findViewById(R.id.result_card).setVisibility(View.VISIBLE);
-        predictionResult.setText(resultBuilder.toString());
+        resultsRecyclerView.setVisibility(View.VISIBLE);
+        diseaseAdapter.setDiseaseList(topDiseaseResults);
+        diseaseAdapter.notifyDataSetChanged();
     }
 
     private Map<String, Double> calculateDiseaseScores(List<String> userSymptoms) {
         Map<String, Double> scores = new HashMap<>();
-        Map<String, Integer> matchCounts = new HashMap<>();
         Map<String, List<String>> matchedSymptoms = new HashMap<>();
-
-        // Normalize user symptoms (convert to lowercase)
-        List<String> normalizedUserSymptoms = new ArrayList<>();
-        for (String symptom : userSymptoms) {
-            normalizedUserSymptoms.add(symptom.toLowerCase().trim());
-        }
 
         // Initialize with all diseases at 0
         for (DiseaseEntry entry : diseaseEntries) {
             scores.put(entry.disease, 0.0);
-            matchCounts.put(entry.disease, 0);
             matchedSymptoms.put(entry.disease, new ArrayList<>());
         }
 
         // For each disease entry, calculate symptom match
         for (DiseaseEntry entry : diseaseEntries) {
-            List<String> entrySymptoms = new ArrayList<>();
-            for (String symptom : entry.symptoms) {
-                entrySymptoms.add(symptom.toLowerCase().trim());
-            }
-
             int matchCount = 0;
             List<String> currentMatchedSymptoms = new ArrayList<>();
 
             // Check each user symptom against this disease's symptoms
-            for (String userSymptom : normalizedUserSymptoms) {
-                boolean matched = false;
-
-                // Try exact matches first
-                if (entrySymptoms.contains(userSymptom)) {
-                    matched = true;
-                    currentMatchedSymptoms.add(userSymptom);
-                } else {
-                    // Try partial matches
-                    for (String entrySymptom : entrySymptoms) {
-                        // Check if user symptom is contained in entry symptom or vice versa
-                        if (entrySymptom.contains(userSymptom) || userSymptom.contains(entrySymptom)) {
-                            matched = true;
-                            currentMatchedSymptoms.add(userSymptom + " → " + entrySymptom);
-                            break;
-                        }
-
-                        // Check for word-level matches (e.g., "chest pain" matches "pain in chest")
-                        String[] userWords = userSymptom.split("\\s+");
-                        String[] entryWords = entrySymptom.split("\\s+");
-                        int wordMatches = 0;
-
-                        for (String userWord : userWords) {
-                            if (userWord.length() <= 3) continue; // Skip short words like "and", "the", etc.
-
-                            for (String entryWord : entryWords) {
-                                if (entryWord.length() <= 3) continue;
-
-                                if (userWord.equals(entryWord) ||
-                                        userWord.contains(entryWord) ||
-                                        entryWord.contains(userWord)) {
-                                    wordMatches++;
-                                    break;
-                                }
-                            }
-                        }
-
-                        // If more than half of significant words match
-                        if (userWords.length > 0 && wordMatches >= Math.max(1, userWords.length / 2)) {
-                            matched = true;
-                            currentMatchedSymptoms.add(userSymptom + " ~ " + entrySymptom);
-                            break;
-                        }
+            for (String userSymptom : userSymptoms) {
+                for (String entrySymptom : entry.symptoms) {
+                    if (entrySymptom.contains(userSymptom) || userSymptom.contains(entrySymptom)) {
+                        matchCount++;
+                        currentMatchedSymptoms.add(userSymptom + " <-> " + entrySymptom);
+                        break; // Move to the next user symptom once a match is found for this entry symptom
                     }
-                }
-
-                if (matched) {
-                    matchCount++;
                 }
             }
 
-            // Calculate scores
-            int totalDiseaseSymptoms = entry.symptoms.size();
-            int totalUserSymptoms = normalizedUserSymptoms.size();
-
-            if (totalUserSymptoms > 0 && totalDiseaseSymptoms > 0) {
-                // How many of the user's symptoms match this disease
-                double userCoverage = (double) matchCount / totalUserSymptoms;
-
-                // How many of the disease's symptoms are covered by user input
-                double diseaseCoverage = (double) matchCount / totalDiseaseSymptoms;
-
-                // Combined score - weight disease coverage more
-                double score = (userCoverage * 0.4) + (diseaseCoverage * 0.6);
-
-                // Bonus for exact matches
-                int exactMatches = 0;
-                for (String matchedSymptom : currentMatchedSymptoms) {
-                    if (!matchedSymptom.contains("→") && !matchedSymptom.contains("~")) {
-                        exactMatches++;
+            // Calculate score based on the number of matching symptoms
+            if (!entry.symptoms().isEmpty() && !userSymptoms.isEmpty()) {
+                double score = (double) matchCount / Math.max(entry.symptoms().size(), userSymptoms.size());
+                scores.put(entry.disease(), Math.max(scores.get(entry.disease()), score)); // Keep the highest score if multiple user symptoms match
+                if (score > 0) {
+                    if (!matchedSymptoms.containsKey(entry.disease())) {
+                        matchedSymptoms.put(entry.disease(), new ArrayList<>(currentMatchedSymptoms));
+                    } else {
+                        matchedSymptoms.get(entry.disease()).addAll(currentMatchedSymptoms);
                     }
                 }
-
-                // Add bonus for exact matches (up to 20% boost)
-                if (exactMatches > 0) {
-                    double exactMatchBonus = Math.min(0.2, 0.05 * exactMatches);
-                    score = Math.min(1.0, score + exactMatchBonus);
-                }
-
-                // Update score if better than current
-                if (score > scores.get(entry.disease)) {
-                    scores.put(entry.disease, score);
-                    matchedSymptoms.put(entry.disease, currentMatchedSymptoms);
-                }
-
-                // Update match count
-                matchCounts.put(entry.disease, matchCounts.get(entry.disease) + matchCount);
             }
         }
 
-        // Store matched symptoms for display (could be used to show why a disease was suggested)
-        for (String disease : matchedSymptoms.keySet()) {
-            if (!matchedSymptoms.get(disease).isEmpty()) {
-                // You could store this in a class variable to show details to the user
-                Log.d("SymptomMatches", disease + ": " + matchedSymptoms.get(disease));
+        // Log matched symptoms for debugging
+        for (Map.Entry<String, List<String>> entry : matchedSymptoms.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
+                Log.d("SymptomMatches", entry.getKey() + ": " + entry.getValue());
             }
         }
 
@@ -361,27 +293,86 @@ public class SymptomPredictor extends AppCompatActivity {
             return "";
         }
 
-        // Split by spaces, hyphens, and other separators
-        String[] words = diseaseName.split("[ -]");
+        String[] words = diseaseName.split("\\s+");
         StringBuilder result = new StringBuilder();
 
         for (String word : words) {
             if (!word.isEmpty()) {
-                // Don't capitalize certain medical articles and prepositions
-                if (word.equalsIgnoreCase("of") || word.equalsIgnoreCase("the") ||
-                        word.equalsIgnoreCase("and") || word.equalsIgnoreCase("in") ||
-                        word.equalsIgnoreCase("with") || word.equalsIgnoreCase("or")) {
-                    result.append(word.toLowerCase());
-                } else {
-                    // Capitalize first letter, lowercase the rest
-                    result.append(word.substring(0, 1).toUpperCase());
-                    result.append(word.substring(1).toLowerCase());
-                }
-                result.append(" ");
+                result.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase()).append(" ");
             }
         }
 
         return result.toString().trim();
+    }
+
+    // RecyclerView Adapter for displaying clickable disease names with scores
+    private class DiseaseAdapter extends RecyclerView.Adapter<DiseaseAdapter.ViewHolder> {
+        private List<DiseaseResult> diseaseResults;
+        private OnDiseaseClickListener clickListener;
+
+        public DiseaseAdapter(List<DiseaseResult> diseaseResults, OnDiseaseClickListener clickListener) {
+            this.diseaseResults = diseaseResults;
+            this.clickListener = clickListener;
+        }
+
+        public void setDiseaseList(List<DiseaseResult> newList) {
+            this.diseaseResults = newList;
+        }
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull android.view.ViewGroup parent, int viewType) {
+            TextView textView = new TextView(parent.getContext());
+            textView.setLayoutParams(new android.view.ViewGroup.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView.setPadding(16, 16, 16, 16);
+            textView.setTextSize(16);
+            textView.setClickable(true);
+            textView.setFocusable(true);
+            textView.setBackgroundResource(R.drawable.list_item_background);
+            return new ViewHolder(textView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            DiseaseResult result = diseaseResults.get(position);
+            String diseaseName = result.name;
+            double score = result.score;
+
+            String matchLevel;
+            if (score >= 0.8) {
+                matchLevel = "Very strong";
+            } else if (score >= 0.6) {
+                matchLevel = "Strong";
+            } else if (score >= 0.4) {
+                matchLevel = "Moderate";
+            } else {
+                matchLevel = "Possible";
+            }
+
+            holder.diseaseTextView.setText(String.format("%s\n%s match (%.0f%%)", diseaseName, matchLevel, score * 100));
+            holder.diseaseTextView.setOnClickListener(v -> clickListener.onDiseaseClick(diseaseName));
+        }
+
+        @Override
+        public int getItemCount() {
+            return diseaseResults.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView diseaseTextView;
+
+            public ViewHolder(@NonNull TextView itemView) {
+                super(itemView);
+                diseaseTextView = itemView;
+            }
+        }
+    }
+
+    // Interface for handling clicks on disease names
+    public interface OnDiseaseClickListener {
+        void onDiseaseClick(String diseaseName);
     }
 
     // Class to hold disease data
@@ -392,6 +383,14 @@ public class SymptomPredictor extends AppCompatActivity {
         DiseaseEntry(String disease, List<String> symptoms) {
             this.disease = disease;
             this.symptoms = symptoms;
+        }
+
+        public String disease() {
+            return disease;
+        }
+
+        public List<String> symptoms() {
+            return symptoms;
         }
     }
 }
