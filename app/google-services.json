@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1002213996809",
+    "project_id": "health-companion-1209",
+    "storage_bucket": "health-companion-1209.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002213996809:android:04dd15cac3a7dc43477bd8",
+        "android_client_info": {
+          "package_name": "com.example.healthcompanion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeD3wnvwZbh5ZsXJdF5gs1RBE2BBTsk9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
